@@ -16,4 +16,4 @@ pnpm dev
 bun dev
 ```
 ### Ссылка на vercel.app
-https://your-app-name.vercel.app
+https://to-do-app-gamma-self-96.vercel.app/
