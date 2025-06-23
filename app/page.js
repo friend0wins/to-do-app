@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-export default function toDoApp() {
+export default function ToDoApp() {
   const [list, setList] = useState([])
   const [input, setInput] = useState("")
   const [show, setShow] = useState("all")
@@ -13,20 +13,20 @@ export default function toDoApp() {
         const newItem = {
           id: Date.now(),
           name: input,
-          done: false,
+          completed: false,
         }
 
-    setList([...list, newItem])
+    setList([newItem, ...list])
     setInput("")
   }
 
-  function changeDone(itemId) {
+  function changeCompleted(itemId) {
     const newList = list.map(function (item) {
       if (item.id === itemId) {
         return {
           id: item.id,
           name: item.name,
-          done: !item.done,
+          completed: !item.completed,
         }
       } else return item
     })
@@ -43,14 +43,26 @@ export default function toDoApp() {
   let showTasks = list
   if (show === "active") {
     showTasks = list.filter(function (item) {
-      return item.done === false
+      return item.completed === false
     })
   }
-  if (show === "done") {
+  if (show === "completed") {
     showTasks = list.filter(function (item) {
-      return item.done === true
+      return item.completed === true
     })
   }
+
+  useEffect(() => {
+  fetch("https://dummyjson.com/todos")
+    .then(response => response.json())
+    .then(data => {
+      const mappedData = data.todos.slice(0, 10).map(item => ({
+        id: item.id,
+        name: item.todo
+      }));
+      setList(mappedData);
+    })
+}, []);
 
   return (
     <div>
@@ -61,14 +73,14 @@ export default function toDoApp() {
         onChange={function (e) {
           setInput(e.target.value)
         }}
-        placeholder="Введите задачу"
+        placeholder="Enter task"
       />
-      <button onClick={addTask}>Добавить</button>
+      <button onClick={addTask}>Add</button>
 
       <div>
-        <button onClick={function () { setShow("all") }}>Все</button>
-        <button onClick={function () { setShow("active") }}>Активные</button>
-        <button onClick={function () { setShow("done") }}>Выполненные</button>
+        <button onClick={function () { setShow("all") }}>All</button>
+        <button onClick={function () { setShow("active") }}>Active</button>
+        <button onClick={function () { setShow("completed") }}>Completed</button>
       </div>
 
       <ul>
@@ -77,15 +89,15 @@ export default function toDoApp() {
             <li key={item.id}>
               <input
                 type="checkbox"
-                checked={item.done}
+                checked={item.completed}
                 onChange={function () {
-                  changeDone(item.id)
+                  changeCompleted(item.id)
                 }}
               />
               {item.name}
               <button onClick={function () {
                 deleteTask(item.id)
-              }}>Удалить</button>
+              }}>Delete</button>
             </li>
           )
         })}
