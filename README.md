@@ -5,6 +5,16 @@
 - React (useState)
 - Vercel (Deployment)
 
+### API
+Приложение при запуске автоматически загружает список задач с внешнего API.
+Источник: https://dummyjson.com/todos
+Загружаются только первые 10 задач:
+```js
+data.todos.slice(0, 10)
+```
+Полученные задачи преобразуются во внутренний формат:
+id -> id; todo -> name; completed -> completed
+
 ### Локальный запуск
 ```bash
 npm run dev
@@ -15,5 +25,6 @@ pnpm dev
 # or
 bun dev
 ```
+
 ### Ссылка на vercel.app
 https://to-do-app-gamma-self-96.vercel.app/
